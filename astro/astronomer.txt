@@ -1,0 +1,59 @@
+
+
+Ultimas entradas do airflow
+3803132	BR	Domain_BS2_Auto_Block	2023-10-06 12:30:10	https://stats.tiendanube.com/store/profile?store_id=3803132	
+
+3802719	AR	Email_Change_Password	2023-10-06 7:30:36	https://stats.tiendanube.com/store/profile?store_id=3802719
+
+
+BOASVINDAS10
+
+
+
+
+#inicializa repositorio
+astro dev init
+astro dev start
+astro dev stop
+
+
+# restart
+astro dev stop && astro dev start
+
+
+
+# lista de providers
+astro dev run providers list
+
+
+
+# para obter versoes de providers distintos:
+https://registry.astronomer.io/providers/dbt%20Cloud/versions/latest
+
+
+
+
+# matar o processo docker e iniciar, isso mata o metabase do astro
+astro dev kill && astro dev start
+
+
+# inicializar ambiente puxando variaveis gravadas em arquivo local. Não funciona em prod é apenas local. Para producao precisa criar variaveis na UI do airflow OU dentro do Dockerfile 
+astro dev start --env .dev
+
+
+# checa integridade dos dags
+astro dev parse
+
+
+
+# roda comandos da pasta test
+astro dev pytest
+
+
+
+astro run my_dag -e .env|prod|dev
+
+
+astro run my_dag -s another_settings_file.yaml
+
+
