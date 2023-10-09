@@ -57,3 +57,76 @@ astro run my_dag -e .env|prod|dev
 astro run my_dag -s another_settings_file.yaml
 
 
+
+# Arquitetura do airflow:
+
+webserver -> interact with the UI, task and Airflow 
+			_> tem command line 
+			-> tem API
+
+Scheduler -> gerencia a execução e trigger das tasks e dags
+
+Metastore -> banco e dados de metadados, usuários, tasks, dags, e outros
+
+Triggerer -> permite lidar com um tipo especial de task
+
+
+Executor(Local, Celery, Kubernetes) -> não executa, ele define como e qual sistema irá executar as tarefas
+
+Queue -> a fila de execução assegura a execução, em ordem correta, de todas as tarefas
+
+Worker -> Executa a tarefa, pode ser uma máquina ou subprocesso
+
+
+
+Operador -> encapsula um tipo de tarefa específico (Python Operator)
+
+	Action Operator -> executa coisas, SQL, Python, Bash
+	Transfer Operator -> transfere dados de origem para destino
+	Sensor -> espera algo acontecer para executar
+
+
+
+Para interagir com outros sistemas, por ter uma natureza modular, o airflow exige a instalação de um provider (módulo que contém operadores ultra específicos) (os providers podem ser vistos aqui: https://registry.astronomer.io/)
+
+Quando vc executa um operador (é uma task), ele vira um task instance
+
+Um dag é um conjunto de operadores
+
+Airflow não é uma solução de stream de dados(kafka) nem de processamento de dados (spark). Ele é um orchestrador de processos
+
+
+Como o airflow funciona?
+O que acontece quando vc triga um DAG ?
+
+
+
+Summary
+Thank you for joining us in this module on Airflow Concepts
+
+We have learnt that Airflow is an open-source tool that allows users to author, schedule, and monitor workflows in data pipelines.
+It is coded in Python and is scalable with a user-friendly interface.
+We explored the several core components, including the web server, scheduler, meta database, triggerer, executor, queue, and worker.
+We also learnt about the Directed Acyclic Graph (DAG), which is the most crucial concept, and it represents a data pipeline with nodes as tasks and directed edges as dependencies.
+Moreover, the Operators are objects that encapsulate tasks, and there are three types of operators: action, transfer, and sensor operators. Providers are packages that contain operators for interacting with specific tools.
+Airflow works by triggering data pipelines through the scheduler, which creates a DAGRun object and a task instance object for the first task. The task instance is then pushed into a queue and executed by the executor.
+To create a DAG in Airflow, create a file in the "dags/" folder, instantiate the DAG object with parameters such as the unique DAG ID, start date, scheduling interval, and catchup parameter. Once these parameters are defined, tasks can be implemented within the DAG.
+To create a task, look up the appropriate operator in the registry.astronomer.io and define the task ID and parameters needed for the operator.
+Airflow is useful for scheduling batch jobs, training machine learning models, and building ETL or ELT pipelines. It saves time by better scheduling and monitoring data pipelines. However, it is not a data streaming solution or a data processing framework, but an orchestrator for batch processing jobs.
+We also learnt how to define dependencies in Airflow is simple using the right and left bitshift operators, which can be seen in the Airflow UI. Dependencies can be defined between tasks, such as "start >> end" meaning "end" is executed after "start".
+Thank you for tuning in. See you in the next one.
+
+
+Resources
+Follow the Links below for more info about the respective Modules
+
+→ DAG Scheduling - https://academy.astronomer.io/astro-runtime-scheduling
+
+
+
+
+
+
+
+
+
