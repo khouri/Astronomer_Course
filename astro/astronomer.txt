@@ -305,3 +305,113 @@ A task must have a unique identifier within a DAG
 You can specify default parameters to all tasks with default_args that expects a dictionary
 Define dependencies with bitshift operators (>> and <<) as well as lists.
 chain helps to define dependencies between task lists
+
+
+
+Summary
+Thank you for joining us in this module on DAG scheduling.
+
+We learnt about the states of a DAGRun which initially is Queued, and changes to Running as soon as the first task runs. Once all tasks are completed, the final state of the DAGRun is determined by the state of the leaf tasks, which could be Success or Failure.
+The start date and scheduling interval are two important parameters to consider when scheduling a DAG. DAGRuns are created based on these parameters and have a data interval start and end corresponding to the time frame for which the DAG was executed.
+The start date parameter defines the timestamp from which the scheduler will attempt to backfill, and the scheduling interval determines how often a DAG runs.
+The catchup mechanism in Airflow allows running all non-triggered DAGRuns between the start date and the last time the DAG was triggered. The backfilling mechanism allows running historical DAGRuns or rerun already existing DAGRuns.
+We also explored the Airflow CLI commands to backfill our DAG for any data intervals, regardless of the start date of our data pipeline.
+Users can define the scheduling interval using CRON expressions or timedelta object, and can use a timetable to schedule a DAG more precisely.
+It is important to set the start date parameter properly to avoid confusion with Airflow, and use a static date.
+Thank you for tuning in. See you in the next one.
+
+
+
+
+Introduction
+→ In this activity we shall learn how to export our Connection
+
+→ Often we might need to migrate our connections from one airflow environment to another.
+
+→ Exporting your connections and importing them to the new environment comes in handy.
+
+Prerequisites
+→ Astro cli setup with a project
+
+→ A Connection created on the Airflow UI
+
+
+Let’s Go!
+
+
+→ Part 1 - Exporting Connections
+
+In order to export the connection from the database into a file we shall use the airflow cli.
+
+First let’s start a bash session into our scheduler using the astro dev bash command.
+
+
+
+Next we shall use the airflow cli to export the connection to a file, using airflow connections export connections.json
+
+
+
+We can verify the contents using cat connections.json
+
+
+
+You may also export the connections in either the yaml or an environment variable format using the commands:
+airflow connections export --file-format yaml -
+
+
+
+airflow connections export --file-format env -
+
+
+
+The commands above will display the contents on the terminal. If you wish them to be stored in a file, you might as well give it a file name.
+
+→ Part 2 - Importing Connections
+
+Now we are ready to import these variables into our new airflow instance. However for this exercise we shall test this by deleting our connections from the UI and importing it back.
+Once you delete all the connections from the UI. Verify it doesn’t exist by starting a bash session and then listing the connections using the airflow cli as follows
+
+astro dev bash
+
+airflow connections list
+
+
+
+
+Now let’s import the connections using the command airflow connections import connections.json
+
+
+
+
+Finally we can verify these on the UI, exactly the way it was.
+
+
+
+
+You may also verify if it works using our existing DAG.
+
+Well done we have managed to export and import our connections successfully!!!
+
+(Optional)
+
+
+If you wish to transfer these files to another host, you’ll have to copy these connection files to your host system.
+
+Copy the container id of the scheduler.
+Exit from the container.
+Execute the command to copy the files from the container to your host system docker cp 067e047a39e2:/usr/local/airflow/connections.json ./
+Verify that the file was copied to your host machine using ls.
+
+
+
+Summary
+Thank you for joining us in this module on Airflow Connections.
+
+
+We learnt in order to interact with external systems in a data pipeline, one needs to create a connection, which is a set of parameters, identified by a unique connection ID, where the connection contains login, password, hostname, etc., required for accessing external systems in a data pipeline.
+We also learnt that one can interact with APIs, Snowflake, DBT etc. using connections in Airflow. To create a connection to interact with an API, one probably may need to get an API key and specify the connection ID, type, description, host, and API key.
+We also explored that the created connections can be listed, interacted with, and filtered from the connections view in Airflow. However if connections were defined using environment variables, they won't be visible on the UI, but they exist and can be exported using the Airflow CLI.
+We also interacted with Snowflake from a data pipeline using the Snowflake operator in Airflow which involved creating a task with the Snowflake operator, creating a connection with Snowflake, and specifying the SQL request.
+The Astro CLI provides the airflow_settings.yaml file, which allows for configuring and programmatically creating airflow connections, pools, and variables. The file can be used to define connection parameters such as connection ID, type, host, login, password, and port for various data sources such as Postgres. This saves time in recreating connections in the Airflow UI every time the project is restarted. However, this functionality is only available locally.
+Overall, creating connections is essential for accessing external systems in a data pipeline. It enables the user to interact with APIs, Snowflake, and DBT etc. and it can be done using the connections view in Airflow or by programmatically creating connections using the Astro/Airflow CLI.
+Thank you for tuning in. See you in the next one.

@@ -1,0 +1,12 @@
+{
+  "http_default": {
+    "conn_type": "http",
+    "description": "",
+    "login": "",
+    "password": null,
+    "host": "swapi.dev/api/",
+    "port": null,
+    "schema": "https",
+    "extra": ""
+  }
+}
