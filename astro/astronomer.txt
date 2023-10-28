@@ -1,3 +1,8 @@
+Error: error building, (re)creating or starting project containers: Error response from daemon: driver failed programming external connectivity on endpoint astro_116e0c-postgres-1 (9ead4d375a051fd93fea5307bfa2e2af291cc13691a2c7a834903bd9b88970e4): Bind for 127.0.0.1:5432 failed: port is already allocated
+(base) nuvemshop@ip-192-168-0-128 astro % docker stop $(docker ps -q)
+
+para solucionar:
+docker stop $(docker ps -q)
 
 
 Ultimas entradas do airflow
@@ -452,3 +457,101 @@ Resources
 Follow the Links below for more info about the respective Modules
 
 → Secrets Backend - https://academy.astronomer.io/astro-module-secrets-backend
+
+
+Basic Checks
+Notes:
+DAGs don't appear in the Airflow UI - Basic Checks 📖
+
+Before diving into debugging it is always a good idea to check whether we have got our basic right.
+
+Often after endless debugging we find that we’ve made a tiny mistake that is too basic to think of while thinking about finding the bugs.
+
+Here are a few basic checks to ensure that debugging your DAGs is actually required.
+
+Ensure that all your DAG files are located in the dags folder.
+The .airflowignore file does not have the name of your DAG file as Airflow ignores any files present on it.
+At the code level, ensure that each DAG:
+Has a unique dag_id. if two dags have the same id, Airflow randomly parses one of them.
+Contains either the word airflow or dag. The scheduler only scans files that meet this requirement.
+If you are using Airflow decorator to instantiate your dag with the @dag decorator, make sure  the decorated function is invoked at the end.
+Further Reading 📖
+
+https://airflow.apache.org/docs/apache-airflow/stable/core-concepts/dags.html#airflowignore
+https://airflow.apache.org/docs/apache-airflow/stable/core-concepts/dags.html#declaring-a-dag
+https://airflow.apache.org/docs/apache-airflow/stable/core-concepts/dags.html#loading-dags
+
+
+
+
+Notes:
+DAGs not running properly - Common Issues
+
+If your DAGs are not running or not behaving as expected, it may be worthwhile to investigate the following frequently encountered issues:
+
+Refraining from immediately triggering DAGs after making changes to them or any other files in the DAG folder is advisable, as the scheduler may still need to parse the DAG.
+Confirm that you have unpaused your DAGs to enable them to execute according to their schedule.
+Ensure that the start_date of your DAG is set to a date in the past else if you trigger the DAG manually you will see a successful DAG run but no successful tasks.
+
+
+Ensure the end_date of your DAG is set to the future else you won’t see any tasks executed like above.
+Often if you expect many instances of your DAG or tasks to be running simultaneously, make sure you verify these core airflow settings usually found in airflow.cfg file
+ Note:  You cannot bring your own airflow.cfg in Astronomer. However, you may configure these by declaring the respective environment variables.[4]
+
+        → max_active_runs_per_dag (The maximum number of active DAG runs per DAG). Default → 16.
+
+        → max_active_tasks_per_dag (The maximum number of task instances allowed to run concurrently in each DAG). Default → 16.
+
+        → parallelism (This defines the maximum number of task instances that can run concurrently per scheduler in Airflow, regardless of the worker count). Default → 32.
+
+The times used in your code should be in UTC for compatibility with external systems as well.
+Further Reading 📖
+
+
+https://airflow.apache.org/docs/apache-airflow/stable/configurations-ref.html
+https://docs.astronomer.io/learn/airflow-scaling-workers
+https://docs.astronomer.io/learn/scheduling-in-airflow
+https://docs.astronomer.io/astro/environment-variables
+
+
+
+
+DAGs not running properly - Dependency Conflicts
+
+Using different dependencies than your Airflow environment is a frequent occurrence. Your task may require a specific Python version that differs from the core Airflow, or it may have packages that clash with other tasks.
+
+To handle these situations, running tasks in a separate environment can be beneficial as it can effectively manage dependency conflicts and ensure compatibility with your execution environments.
+
+Airflow offers several alternatives for executing tasks in separate environments:
+
+→ One option is the KubernetesPodOperator, which is suitable for users who operate Airflow on Kubernetes and require greater control over the resources and infrastructure used to run the task, in addition to package management. However, there are some drawbacks, such as a more complicated setup and increased task latency.
+
+→ The ExternalPythonOperator is another choice that enables you to execute certain tasks with a different set of Python libraries than others and the primary Airflow environment. This may be a virtual environment or any pre-installed Python installation that is accessible in the Airflow task's execution environment.
+
+→ Another option is the PythonVirtualenvOperator, which functions similarly as the ExternalPythonOperator . However, it generates and deletes a new virtual environment for each task. This operator is ideal if you don't want to retain your virtual environment. The disadvantage of this operator is that it takes more time to generate the environment each time the task is executed, resulting in higher task latency.
+
+
+
+Too overwhelming?
+Don’t worry we have separate modules that cover these topics in detail. Don’t forget to visit them.
+
+
+
+Further Reading 📖
+
+https://docs.astronomer.io/learn/external-python-operator
+https://docs.astronomer.io/learn/kubepod-operator
+
+
+Summary
+Thank you for joining us in this module on debugging DAGS in Airflow.
+We have learned some valuable techniques that will help you identify and resolve issues that may arise when working with Airflow.
+Firstly, we looked at the basic checks that we can perform on our Airflow settings such as checking the wait intervals and the scaling parameters for our DAG.
+We then learned how to validate that our DAGs and modules are present at the correct location and our DAG has been instantiated properly and that any dependencies are resolved correctly.
+Next, we explored how to check the health and logs of our scheduler to make sure our DAGs have been parsed and are being scheduled properly.
+We also learned how to verify the integrity of external systems that our DAGs may interact with, such as databases, and discussed the necessity to verify whether these systems allow connections to be established.
+Finally, we also looked at how to resolve dependency conflicts between various DAGs by using operators such as the KubernetesPodOperator, the ExternalPythonOperator, or the PythonVirtualEnvironment operator. These three operators allow us to isolate our DAG and any of its dependencies from our main Airflow to avoid any conflicts that may arise.
+
+With these techniques, we can ensure that our DAGs run smoothly and that any issues that may arise can be quickly identified and resolved.
+Thank you for tuning in and happy debugging.
+
