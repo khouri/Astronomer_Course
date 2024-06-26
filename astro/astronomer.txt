@@ -554,4 +554,16 @@ Finally, we also looked at how to resolve dependency conflicts between various D
 
 With these techniques, we can ensure that our DAGs run smoothly and that any issues that may arise can be quickly identified and resolved.
 Thank you for tuning in and happy debugging.
+What's a Sensor?
+A Sensor is a particular operator that waits for a condition to be true. If the condition is true, the task is marked successful , and the next task runs. If the condition is false, the sensor waits for another interval until it times out and fails.
+
+
+In the example above, the Sensor checks  _condition to be true every 60 seconds by default (poke_interval).
+Since _condition always returns False, the Sensor will continue checking every 60 seconds until
+it times out after 7 days (7 * 24 * 60 * 60 by default). When the Sensor times out, it is marked failed.
+That's it.
+Now that you know what Sensors are, let's discover how do they work and why they are so useful.
+
+
+
 
